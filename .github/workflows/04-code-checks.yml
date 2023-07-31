@@ -1,24 +1,32 @@
-name: Code checks
+name: Code checks and linter
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types: [opened, reopened]
+    branches:
+      - main
 
 jobs:
-  job1:
-    name: linting
+  code_checks:
     runs-on: ubuntu-latest
     steps:
-    - name: Check out repo
-      uses: actions/checkout@main
-    - name: Use Python version 3.8
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.8'
-    - name: Install Flake8
-      run: |
-        python -m pip install flake8
-    - name: Run linting tests
-      run: | 
-        flake8 src/model/
+      - name: Check out repo
+        uses: actions/checkout@main
 
+      - name: Use Python version 3.8
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
 
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run linting tests
+        run: |
+          flake8 src/model/
+
+      - name: Run tests
+        run: |
+          pytest tests/
