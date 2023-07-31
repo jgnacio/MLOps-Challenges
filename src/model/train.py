@@ -29,6 +29,7 @@ def main(args):
     # evaluate model
     evaluate_model(model, X_test, y_test)
 
+
 def get_csvs_df(path):
     if not os.path.exists(path):
         raise RuntimeError(f"Cannot use non-existent path provided: {path}")
@@ -39,13 +40,19 @@ def get_csvs_df(path):
 
 
 def split_data(df):
-    X, y  = df[['Pregnancies','PlasmaGlucose','DiastolicBloodPressure','TricepsThickness','SerumInsulin','BMI','DiabetesPedigree','Age']].values, df['Diabetic'].values
-    return train_test_split(X, y, test_size=0.30, random_state=0)    
+    X, y = df[['Pregnancies', 'PlasmaGlucose', 'DiastolicBloodPressure',
+               'TricepsThickness', 'SerumInsulin', 'BMI',
+               'DiabetesPedigree', 'Age']].values, df['Diabetic'].values
+    return train_test_split(X, y, test_size=0.30, random_state=0)
 
 
 def train_model(reg_rate, X_train, y_train):
     # train model
-    return LogisticRegression(C=1/reg_rate, solver="liblinear").fit(X_train, y_train)
+    return LogisticRegression(
+        C=1/reg_rate,
+        solver="liblinear"
+    ).fit(X_train, y_train)
+
 
 def evaluate_model(model, X_test, y_test):
     # evaluate model
@@ -53,11 +60,10 @@ def evaluate_model(model, X_test, y_test):
     acc = np.average(y_hat == y_test)
     print(f"Accuracy: {acc}")
     y_scores = model.predict_proba(X_test)
-    auc = roc_auc_score(y_test, y_scores[:,1])
+    auc = roc_auc_score(y_test, y_scores[:, 1])
     print(f"AUC: {auc}")
     # plot ROC curve
-    fpr, tpr, thresholds = roc_curve(y_test, y_scores[:,1])
-    fig = plt.figure(figsize=(6, 4))
+    fpr, tpr, thresholds = roc_curve(y_test, y_scores[:, 1])
     # plot the diagonal 50% line
     plt.plot([0, 1], [0, 1], 'k--')
     # plot the FPR and TPR achieved by our model
@@ -65,6 +71,7 @@ def evaluate_model(model, X_test, y_test):
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('ROC Curve')
+
 
 def parse_args():
     # setup arg parser
@@ -81,6 +88,7 @@ def parse_args():
 
     # return args
     return args
+
 
 # run script
 if __name__ == "__main__":
