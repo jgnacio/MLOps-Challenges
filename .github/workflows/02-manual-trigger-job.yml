@@ -9,12 +9,14 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@main
+
       - name: Install az ml extension
         run: az extension add -n ml -y
-      - name: Azure login
-        uses: azure/login@v1
+
+      - uses: azure/login@v1
         with:
-          creds: ${{secrets.AZURE_CREDENTIALS}}
-      - name: Execute job
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Execute job on Azure Machine Learning
         working-directory: src/
         run: az ml job create --file job.yml -g rg-challengue-02 -w mlw-challengue-02
