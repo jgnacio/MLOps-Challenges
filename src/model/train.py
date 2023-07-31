@@ -29,7 +29,6 @@ def main(args):
     # evaluate model
     evaluate_model(model, X_test, y_test)
 
-
 def get_csvs_df(path):
     if not os.path.exists(path):
         raise RuntimeError(f"Cannot use non-existent path provided: {path}")
